@@ -30,8 +30,21 @@
             </Image>
         </Grid>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" >
+            <StackPanel Orientation="Vertical" >
+                <TextBlock Margin="5" Text="Name Box:" FontWeight="Bold" FontFamily="Cambria" />
+                <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="TextBoxMapName"/>
+                <Button Width="100" Height="50" Click="Button_Click_Save"> Save</Button>
+                <Button Width="100" Height="50" Click="Button_Click_Load">Load</Button>
+
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Width="100" Height="50">asd</Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Width="100" Height="50">asd</Button>
+            </StackPanel>
             <StackPanel Orientation="Horizontal" >
-                <Button Width="100" Height="50"> asd</Button>
+                <Button Width="100" Height="50">asd</Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Button Width="100" Height="50">asd</Button>

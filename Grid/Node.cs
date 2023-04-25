@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Windows;
 
 namespace Grid
@@ -11,9 +12,11 @@ namespace Grid
         private double a = 0.5;
         private double c = 0.7071;
         private Point _topLeft;
-        public Node(Point topLeft)
+        private FieldTypeValue _fieldType;
+        public Node(Point topLeft, FieldTypeValue ftv = FieldTypeValue.Tile)
         {
             _topLeft = topLeft;
+            _fieldType = ftv;
         }
 
         public bool Contains(Point point)
@@ -26,11 +29,38 @@ namespace Grid
             return "Node_ "+_topLeft.ToString();
         }
 
-        public Point GetTopLeft()
+        public Point TopLeft
         {
-            return _topLeft;
+            get
+            {
+                return _topLeft;
+            }
         }
 
+        public FieldTypeValue FieldType
+        {
+            get
+            {
+                return _fieldType;
+            }
+            
+        }
+
+        public void SetWall()
+        {
+            _fieldType = FieldTypeValue.Wall;
+        }
+
+        public void SetTile()
+        {
+            _fieldType = FieldTypeValue.Tile;
+        }
+
+    }
+
+    public enum FieldTypeValue
+    {
+        Tile,Wall
     }
 
     public enum Direction
@@ -70,7 +100,7 @@ namespace Grid
         }
         public Node GetAdjacent(Node referenceNode,Direction direction)
         {
-            Point topLeft = referenceNode.GetTopLeft();
+            Point topLeft = referenceNode.TopLeft;
             int x = (int)topLeft.X, y = (int)topLeft.Y;
             x = applyOffset(x);
             y = applyOffset(y);
@@ -109,6 +139,24 @@ namespace Grid
                     break;
             }
             return _nodeList[x][y];
+        }
+
+        public List<String> Serialize()
+        {
+            List<String> result = new List<string>();
+            _nodeList.ForEach(a =>
+            {
+                a.ForEach(b =>
+                {
+                    result.Add(JsonSerializer.Serialize(b));
+                });
+            });
+            return result;
+        }
+
+        public void Deserialize()
+        {
+
         }
 
         private int applyOffset(int num)

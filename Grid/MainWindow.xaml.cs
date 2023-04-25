@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.Win32;
 
 namespace Grid
 {
@@ -67,5 +70,26 @@ namespace Grid
 
         }
 
+        private void Button_Click_Save(object sender, RoutedEventArgs e)
+        {
+            string name = TextBoxMapName.Text;
+            if (name.Length == 0)
+            {
+                return;
+            }
+            gridController.Serialize(name);
+        }
+
+        private void Button_Click_Load(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string content = File.ReadAllText(openFileDialog.FileName);
+                string[] path = openFileDialog.FileName.Split("\\");
+                TextBoxMapName.Text = path[path.Length - 1].Split(".")[0];
+                gridController.Deserialize(content);
+            }
+        }
     }
 }

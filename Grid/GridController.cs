@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Timers;
 using System.Windows;
@@ -68,7 +69,7 @@ namespace Grid
             if (result == null)
             {
                 var node = _nodeHandler.GetNode(position);
-                ColourSquare(node.GetTopLeft(), _brown, _brown);
+                ColourSquare(node.TopLeft, _brown, _brown);
             }
             else
             {
@@ -76,18 +77,24 @@ namespace Grid
                 mainWindow.GridImage.Source = new DrawingImage(_drawingGroup);
             }
         }
+        public void Serialize(String name)
+        {
+            List<string> result =  _nodeHandler.Serialize();
+            File.WriteAllLines(name + ".json", result);
+        }
 
         public void LeftClick(Point position)
         {
-            
+            Node node = _nodeHandler.GetNode(position);
             Drawing result = _drawingGroup.Children.FirstOrDefault(x => x.Bounds.Contains(position) && !x.Bounds.GetHashCode().Equals(_baseGridHash));
             if (result == null)
             {
-                Node node = _nodeHandler.GetNode(position);
-                ColourSquare(node.GetTopLeft(), _brown, _brown); 
+                node.SetWall();
+                ColourSquare(node.TopLeft, _brown, _brown); 
             }
             else
             {
+                node.SetTile();
                 _drawingGroup.Children.Remove(result);
                 mainWindow.GridImage.Source = new DrawingImage(_drawingGroup);
             }
@@ -171,6 +178,11 @@ namespace Grid
                     _nodeHandler.CreateNode(j,i,new Point(j*_offset, i*_offset));
                 }
             }
+        }
+
+        public void Deserialize(string content)
+        {
+            throw new NotImplementedException();
         }
     }
 }
