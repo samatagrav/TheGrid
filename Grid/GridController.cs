@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Timers;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+// ReSharper disable All
 
 namespace Grid
 {
@@ -18,6 +20,7 @@ namespace Grid
         }
 
         private const int _offSet = 25;
+        private const string Separator = "\n";
         private DrawingVisual _gridLinesVisual = new DrawingVisual();
         private DrawingGroup _drawingGroup = new DrawingGroup();
         private readonly Color _red = Color.FromRgb(255, 0, 0);
@@ -182,7 +185,19 @@ namespace Grid
 
         public void Deserialize(string content)
         {
-            throw new NotImplementedException();
+            string[] lines = content.Split(Separator);
+            for (int i = 0; i < _columns; i++)
+            {
+                for (int j = 0; j < _rows; j++)
+                {
+                    Node n = JsonSerializer.Deserialize<Node>(lines[j*_rows+ i]);
+                    _nodeHandler.CreateNode(j, i, n);
+                    if (n.FieldType == FieldTypeValue.Wall)
+                    {
+                        LeftClick(new Point(j * _offset + 1, i * _offset + 1));
+                    }
+                }
+            }
         }
     }
 }

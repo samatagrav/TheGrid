@@ -27,7 +27,8 @@ namespace Grid
 
         private void GridImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            gridController.LeftClick(e.GetPosition(this));
+            
+            gridController.LeftClick(e.GetPosition(GridImage));
         }
         
         private void GridImage_MouseMove(object sender, MouseEventArgs e)
@@ -35,7 +36,7 @@ namespace Grid
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 
-                gridController.WallClick(e.GetPosition(this));
+                gridController.WallClick(e.GetPosition(GridImage));
             }
         }
 

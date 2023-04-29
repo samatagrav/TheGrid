@@ -13,6 +13,11 @@ namespace Grid
         private double c = 0.7071;
         private Point _topLeft;
         private FieldTypeValue _fieldType;
+
+        public Node()
+        {
+        }
+
         public Node(Point topLeft, FieldTypeValue ftv = FieldTypeValue.Tile)
         {
             _topLeft = topLeft;
@@ -35,6 +40,10 @@ namespace Grid
             {
                 return _topLeft;
             }
+            set
+            {
+                _topLeft = value;
+            }
         }
 
         public FieldTypeValue FieldType
@@ -43,7 +52,10 @@ namespace Grid
             {
                 return _fieldType;
             }
-            
+            set
+            {
+                _fieldType = value;
+            }
         }
 
         public void SetWall()
@@ -84,6 +96,11 @@ namespace Grid
         }
 
         public List<List<Node>> GetNodes() => _nodeList;
+
+        public void CreateNode(int x, int y, Node n)
+        {
+            _nodeList[x].Insert(y, n);
+        }
 
         public void CreateNode(int x, int y, Point point)
         {
@@ -156,7 +173,12 @@ namespace Grid
 
         public void Deserialize()
         {
+            
+        }
 
+        public void Flush()
+        {
+            _nodeList.ForEach(x=>x.Clear());
         }
 
         private int applyOffset(int num)
