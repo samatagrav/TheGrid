@@ -17,6 +17,7 @@ namespace Grid.PathFinding
         {
             heruistic = ManhattanDistance;
             _hFunc = ManhattanDistance;
+            this.nodeHandler = nodeHandler;
         }
 
         public override List<Node> FindPath()
@@ -25,6 +26,7 @@ namespace Grid.PathFinding
 
             Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
             Dictionary<Node, int> gScore = new Dictionary<Node, int>();
+            gScore[_startNode] = 0;
             Dictionary<Node, double> fScore = new Dictionary<Node, double>();
             Func<Node, int> getGScore = (node) => { return gScore.ContainsKey(node) ? gScore[node] : _pseudoInfinity; };
 
@@ -41,7 +43,7 @@ namespace Grid.PathFinding
                 orderedOpenList.Remove(current);
                 neighbours.ForEach(neighbor =>
                 {
-                    int tentative_gs = getGScore(current);
+                    int tentative_gs = getGScore(current) + 1;//path weight is 1
                     if (tentative_gs < getGScore(neighbor))
                     {
                         cameFrom[neighbor] = current;
@@ -60,21 +62,22 @@ namespace Grid.PathFinding
         private List<Node> constructPath(Dictionary<Node,Node> cameFrom,Node current)
         {
             List<Node> totalPath = new List<Node>();
+            totalPath.Add(current);
             Node localCurrent = current;
-            while (cameFrom.ContainsKey(current))
+            while (cameFrom.ContainsKey(localCurrent))
             {
                 localCurrent = cameFrom[localCurrent];
-                totalPath.Add(current);
+                totalPath.Add(localCurrent);
             }
             totalPath.Reverse();
             return totalPath;
         }
 
-        public override void PreMark()
+        public override void VisitedMark()
         {
         }
 
-        public override void PostMark()
+        public override void CurrentMark()
         {
         }
 
