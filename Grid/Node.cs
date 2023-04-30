@@ -115,6 +115,90 @@ namespace Grid
         {
             return _nodeList[x][y];
         }
+
+        public List<Node> GetNeighbors(Node node)
+        {
+            List<Node> neighbors = new List<Node>();
+            Point topLeft = node.TopLeft;
+            int x = (int)topLeft.X, y = (int)topLeft.Y;
+            x = applyOffset(x);
+            y = applyOffset(y);
+
+            if (x > 0 && y > 0 )
+            {
+                if (x < _nodeList.Count -1 && y < _nodeList[0].Count -1)
+                {
+                    neighbors.Add(_nodeList[x - 1][y - 1]);
+                    neighbors.Add(_nodeList[x - 1][y]);
+                    neighbors.Add(_nodeList[x - 1][y + 1]);
+                    neighbors.Add(_nodeList[x + 1][y - 1]);
+                    neighbors.Add(_nodeList[x + 1][y]);
+                    neighbors.Add(_nodeList[x + 1][y + 1]);
+                    neighbors.Add(_nodeList[x][y - 1]);
+                    neighbors.Add(_nodeList[x][y + 1]);
+                } else if (x < _nodeList.Count -1)
+                {
+                    neighbors.Add(_nodeList[x - 1][y - 1]);
+                    neighbors.Add(_nodeList[x - 1][y]);
+                    neighbors.Add(_nodeList[x + 1][y - 1]);
+                    neighbors.Add(_nodeList[x + 1][y]);
+                    neighbors.Add(_nodeList[x][y - 1]);
+                } else if (y < _nodeList[0].Count -1)
+                {
+                    neighbors.Add(_nodeList[x - 1][y - 1]);
+                    neighbors.Add(_nodeList[x - 1][y]);
+                    neighbors.Add(_nodeList[x - 1][y + 1]);
+                    neighbors.Add(_nodeList[x][y - 1]);
+                    neighbors.Add(_nodeList[x][y + 1]);
+                }
+                else
+                {
+                    neighbors.Add(_nodeList[x - 1][y - 1]);
+                    neighbors.Add(_nodeList[x - 1][y]);
+                    neighbors.Add(_nodeList[x][y - 1]);
+                }
+            }
+            else
+            {
+                if (y == 0)
+                {
+                    if (x < _nodeList.Count - 1)
+                    {
+                        neighbors.Add(_nodeList[x - 1][y]);
+                        neighbors.Add(_nodeList[x - 1][y + 1]);
+                        neighbors.Add(_nodeList[x + 1][y]);
+                        neighbors.Add(_nodeList[x + 1][y + 1]);
+                        neighbors.Add(_nodeList[x][y + 1]);
+                    }
+                    else
+                    {
+                        neighbors.Add(_nodeList[x - 1][y]);
+                        neighbors.Add(_nodeList[x - 1][y + 1]);
+                        neighbors.Add(_nodeList[x][y + 1]);
+                    }
+                }
+                else if(x == 0)
+                {
+                    if (y < _nodeList[0].Count - 1)
+                    {
+                        neighbors.Add(_nodeList[x + 1][y - 1]);
+                        neighbors.Add(_nodeList[x + 1][y]);
+                        neighbors.Add(_nodeList[x + 1][y + 1]);
+                        neighbors.Add(_nodeList[x][y - 1]);
+                        neighbors.Add(_nodeList[x][y + 1]);
+                    }
+                    else
+                    {
+                        neighbors.Add(_nodeList[x + 1][y - 1]);
+                        neighbors.Add(_nodeList[x + 1][y]);
+                        neighbors.Add(_nodeList[x][y - 1]);
+                    }
+                }
+            }
+
+            return neighbors;
+        }
+
         public Node GetAdjacent(Node referenceNode,Direction direction)
         {
             Point topLeft = referenceNode.TopLeft;
