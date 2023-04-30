@@ -7,6 +7,8 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using Grid.PathFinding;
+
 // ReSharper disable All
 
 namespace Grid
@@ -106,13 +108,16 @@ namespace Grid
 
         public void SetStart(Point position)
         {
-
-            ColourSquare(position, _greenStart, _greenStart);
+            Node node = _nodeHandler.GetNode(position);
+            _nodeHandler.Start =node;
+            ColourSquare(node.TopLeft, _greenStart, _greenStart);
         }
 
         public void SetEnd(Point position)
         {
-            ColourSquare(position, _greenEnd, _greenEnd);
+            Node node = _nodeHandler.GetNode(position);
+            _nodeHandler.End = _nodeHandler.GetNode(position);
+            ColourSquare(node.TopLeft, _greenEnd, _greenEnd);
         }
 
         private void DrawGrid(int rows, int columns)
@@ -198,6 +203,19 @@ namespace Grid
                     }
                 }
             }
+        }
+
+        public void PathFind()
+        {
+            var start = _nodeHandler.Start;
+            var end = _nodeHandler.End;
+            if ( start!= null && end != null)
+            {
+                var a = new AStar(start,end,null,_nodeHandler);
+                var result = a.FindPath();
+                var b = result;
+            }
+
         }
     }
 }

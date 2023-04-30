@@ -84,6 +84,19 @@ namespace Grid
     {
         private List<List<Node>> _nodeList;
         private int _offset;
+        
+        public Node Start
+        {
+            get;
+            set;
+        }
+
+        public Node End
+        {
+            get;
+            set;
+        }
+
         public NodeHandler(int capacityRows, int capacityColumns,int offset)
         {
             _offset = offset;

@@ -92,5 +92,10 @@ namespace Grid
                 gridController.Deserialize(content);
             }
         }
+
+        private void StartPathfinding_Click(object sender, RoutedEventArgs e)
+        {
+            gridController.PathFind();
+        }
     }
 }

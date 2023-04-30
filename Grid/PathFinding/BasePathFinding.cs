@@ -15,8 +15,8 @@ namespace Grid
         }
 
         public abstract List<Node> FindPath();
-        public abstract void PreMark();
-        public abstract void PostMark();
+        public abstract void VisitedMark();
+        public abstract void CurrentMark();
 
     }
 }
