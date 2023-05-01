@@ -41,10 +41,10 @@
                 <Button x:Name="StartPathfinding" Width="100" Height="50" Content="Start" Click="StartPathfinding_Click"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Button Width="100" Height="50">asd</Button>
+                <Button x:Name="Clear" Width="100" Height="50" Content="ClearPathFinding" Click="Clear_Click"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
-                <Button Width="100" Height="50">asd</Button>
+                <Button x:Name="ClearWalls" Width="100" Height="50" Content="ClearMap" Click="ClearWalls_Click"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Button Width="100" Height="50">asd</Button>

@@ -266,5 +266,26 @@ namespace Grid
         {
             return _nodeHandler.Start.Equals(node) || _nodeHandler.End.Equals(node);
         }
+
+        public void Clear(bool clearWalls)
+        {
+            List<List<Node>> nodeList = _nodeHandler.GetNodes();
+            nodeList.ForEach(a =>
+            {
+                a.ForEach(b =>
+                {
+                    if (clearWalls)
+                    {
+                        b.SetTile();
+                        ColourSquare(b.TopLeft,_black,_white);
+                    } else if (b.IsPassable())
+                    {
+                        ColourSquare(b.TopLeft, _black, _white);
+                    }
+                });
+            });
+            _nodeHandler.Start = null;
+            _nodeHandler.End = null;
+        }
     }
 }

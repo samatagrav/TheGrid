@@ -93,5 +93,15 @@ namespace Grid
         {
             gridController.PathFind();
         }
+
+        private void Clear_Click(object sender, RoutedEventArgs e)
+        {
+            gridController.Clear(false);
+        }
+
+        private void ClearWalls_Click(object sender, RoutedEventArgs e)
+        {
+            gridController.Clear(true);
+        }
     }
 }
