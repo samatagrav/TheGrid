@@ -213,13 +213,17 @@ namespace Grid
             }
         }
 
-        public void PathFind()
+        public void PathFind(int algorithmIndex)
         {
             var start = _nodeHandler.Start;
             var end = _nodeHandler.End;
             if ( start!= null && end != null)
             {
-                AStar a = new AStar(start,end,null,_nodeHandler);
+                BasePathFinding a;
+                if (algorithmIndex == 0 || true)
+                {
+                    a = new AStar(start, end, null, _nodeHandler);
+                }
                 a.CurrentMark = ColorCurrent;
                 a.VisitedMark = ColorVisited;
                 Thread thread = new Thread(e =>

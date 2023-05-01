@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +24,7 @@ namespace Grid
             gridController = new GridController(this);
             InitializeComponent();
             gridController.InnitGrid();
+            cmbAlgorithms.SelectedIndex = 0;
         }
 
         private void GridImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -35,7 +37,6 @@ namespace Grid
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                
                 gridController.WallClick(e.GetPosition(GridImage));
             }
         }
@@ -91,7 +92,7 @@ namespace Grid
 
         private void StartPathfinding_Click(object sender, RoutedEventArgs e)
         {
-            gridController.PathFind();
+            gridController.PathFind(cmbAlgorithms.SelectedIndex);
         }
 
         private void Clear_Click(object sender, RoutedEventArgs e)
