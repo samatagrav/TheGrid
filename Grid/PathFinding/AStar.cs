@@ -34,15 +34,16 @@ namespace Grid.PathFinding
             while (orderedOpenList.Count != 0)
             {
                 Node current=  orderedOpenList.OrderBy(a => fScore[a]).First();
-                CurrentMark(current);
                 if (current.TopLeft.Equals(_endNode.TopLeft))
                 {
                     return constructPath(cameFrom, current);
                 }
                 List<Node> neighbours =  nodeHandler.GetNeighbors(current);
+                CurrentMark(current);
                 orderedOpenList.Remove(current);
                 neighbours.ForEach(neighbor =>
                 {
+                    VisitedMark(neighbor);
                     int tentative_gs = getGScore(current) + 1;//path weight is 1
                     if (tentative_gs < getGScore(neighbor))
                     {
@@ -53,8 +54,8 @@ namespace Grid.PathFinding
                             orderedOpenList.Add(neighbor);
                         }
                     }
-                    VisitedMark(current);
                 });
+                VisitedMark(current);
             }
 
             return null;

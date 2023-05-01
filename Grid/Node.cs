@@ -68,6 +68,11 @@ namespace Grid
             _fieldType = FieldTypeValue.Tile;
         }
 
+        public bool IsPassable()
+        {
+            return _fieldType != FieldTypeValue.Wall;
+        }
+
     }
 
     public enum FieldTypeValue
@@ -141,34 +146,35 @@ namespace Grid
             {
                 if (x < _nodeList.Count -1 && y < _nodeList[0].Count -1)
                 {
-                    neighbors.Add(_nodeList[x - 1][y - 1]);
-                    neighbors.Add(_nodeList[x - 1][y]);
-                    neighbors.Add(_nodeList[x - 1][y + 1]);
-                    neighbors.Add(_nodeList[x + 1][y - 1]);
-                    neighbors.Add(_nodeList[x + 1][y]);
-                    neighbors.Add(_nodeList[x + 1][y + 1]);
-                    neighbors.Add(_nodeList[x][y - 1]);
-                    neighbors.Add(_nodeList[x][y + 1]);
-                } else if (x < _nodeList.Count -1)
+                    AddIfNotWall(neighbors, x - 1, y - 1);
+                    AddIfNotWall(neighbors, x - 1, y);
+                    AddIfNotWall(neighbors, x - 1, y + 1);
+                    AddIfNotWall(neighbors, x + 1, y - 1);
+                    AddIfNotWall(neighbors, x + 1, y);
+                    AddIfNotWall(neighbors, x + 1, y+1);
+                    AddIfNotWall(neighbors, x, y-1);
+                    AddIfNotWall(neighbors, x, y+1);
+                }
+                else if (x < _nodeList.Count -1)
                 {
-                    neighbors.Add(_nodeList[x - 1][y - 1]);
-                    neighbors.Add(_nodeList[x - 1][y]);
-                    neighbors.Add(_nodeList[x + 1][y - 1]);
-                    neighbors.Add(_nodeList[x + 1][y]);
-                    neighbors.Add(_nodeList[x][y - 1]);
+                    AddIfNotWall(neighbors,x - 1,y - 1);
+                    AddIfNotWall(neighbors,x - 1,y);
+                    AddIfNotWall(neighbors,x + 1,y - 1);
+                    AddIfNotWall(neighbors,x + 1,y);
+                    AddIfNotWall(neighbors,x,y - 1);
                 } else if (y < _nodeList[0].Count -1)
                 {
-                    neighbors.Add(_nodeList[x - 1][y - 1]);
-                    neighbors.Add(_nodeList[x - 1][y]);
-                    neighbors.Add(_nodeList[x - 1][y + 1]);
-                    neighbors.Add(_nodeList[x][y - 1]);
-                    neighbors.Add(_nodeList[x][y + 1]);
+                    AddIfNotWall(neighbors,x - 1,y - 1);
+                    AddIfNotWall(neighbors,x - 1,y);
+                    AddIfNotWall(neighbors,x - 1,y + 1);
+                    AddIfNotWall(neighbors,x,y - 1);
+                    AddIfNotWall(neighbors,x,y + 1);
                 }
                 else
                 {
-                    neighbors.Add(_nodeList[x - 1][y - 1]);
-                    neighbors.Add(_nodeList[x - 1][y]);
-                    neighbors.Add(_nodeList[x][y - 1]);
+                    AddIfNotWall(neighbors,x - 1,y - 1);
+                    AddIfNotWall(neighbors,x - 1,y);
+                    AddIfNotWall(neighbors,x,y - 1);
                 }
             }
             else
@@ -177,34 +183,34 @@ namespace Grid
                 {
                     if (x < _nodeList.Count - 1)
                     {
-                        neighbors.Add(_nodeList[x - 1][y]);
-                        neighbors.Add(_nodeList[x - 1][y + 1]);
-                        neighbors.Add(_nodeList[x + 1][y]);
-                        neighbors.Add(_nodeList[x + 1][y + 1]);
-                        neighbors.Add(_nodeList[x][y + 1]);
+                        AddIfNotWall(neighbors,x - 1,y);
+                        AddIfNotWall(neighbors,x - 1,y + 1);
+                        AddIfNotWall(neighbors,x + 1,y);
+                        AddIfNotWall(neighbors,x + 1,y + 1);
+                        AddIfNotWall(neighbors,x,y + 1);
                     }
                     else
                     {
-                        neighbors.Add(_nodeList[x - 1][y]);
-                        neighbors.Add(_nodeList[x - 1][y + 1]);
-                        neighbors.Add(_nodeList[x][y + 1]);
+                        AddIfNotWall(neighbors,x - 1,y);
+                        AddIfNotWall(neighbors,x - 1,y + 1);
+                        AddIfNotWall(neighbors,x,y + 1);
                     }
                 }
                 else if(x == 0)
                 {
                     if (y < _nodeList[0].Count - 1)
                     {
-                        neighbors.Add(_nodeList[x + 1][y - 1]);
-                        neighbors.Add(_nodeList[x + 1][y]);
-                        neighbors.Add(_nodeList[x + 1][y + 1]);
-                        neighbors.Add(_nodeList[x][y - 1]);
-                        neighbors.Add(_nodeList[x][y + 1]);
+                        AddIfNotWall(neighbors,x + 1,y - 1);
+                        AddIfNotWall(neighbors,x + 1,y);
+                        AddIfNotWall(neighbors,x + 1,y + 1);
+                        AddIfNotWall(neighbors,x,y - 1);
+                        AddIfNotWall(neighbors,x,y + 1);
                     }
                     else
                     {
-                        neighbors.Add(_nodeList[x + 1][y - 1]);
-                        neighbors.Add(_nodeList[x + 1][y]);
-                        neighbors.Add(_nodeList[x][y - 1]);
+                        AddIfNotWall(neighbors,x + 1,y - 1);
+                        AddIfNotWall(neighbors,x + 1,y);
+                        AddIfNotWall(neighbors,x,y - 1);
                     }
                 }
             }
@@ -281,6 +287,15 @@ namespace Grid
         private int applyOffset(int num)
         {
             return num / _offset;
+        }
+
+        private void AddIfNotWall(List<Node> result,int x, int y)
+        {
+            Node node = _nodeList[x][y];
+            if (node.IsPassable())
+            {
+                result.Add(node);
+            }
         }
     }
 }

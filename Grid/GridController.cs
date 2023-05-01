@@ -25,7 +25,7 @@ namespace Grid
 
         private const int _offSet = 25;
         private const string Separator = "\n";
-        private const int _sleepTimeInMiliseconds = 500;
+        private const int _sleepTimeInMiliseconds = 50;
         private DrawingVisual _gridLinesVisual = new DrawingVisual();
         private DrawingGroup _drawingGroup = new DrawingGroup();
         private readonly Color _red = Color.FromRgb(255, 0, 0);
@@ -34,6 +34,7 @@ namespace Grid
         private readonly Color _greenStart = Color.FromRgb(50,200,50);
         private readonly Color _greenEnd = Color.FromRgb(10, 100, 10);
         private readonly Color _white = Color.FromRgb(255, 255, 255);
+        private readonly Color _blue = Color.FromRgb(25, 25, 125);
         private readonly Color _yellow = Color.FromRgb(255,255,0);
         private readonly Color _orange = Color.FromRgb(255,165,0);
 
@@ -78,10 +79,13 @@ namespace Grid
             if (result == null)
             {
                 var node = _nodeHandler.GetNode(position);
+                node.SetWall();
                 ColourSquare(node.TopLeft, _brown, _brown);
             }
             else
             {
+                var node = _nodeHandler.GetNode(position);
+                node.SetTile();
                 _drawingGroup.Children.Remove(result);
                 mainWindow.GridImage.Source = new DrawingImage(_drawingGroup);
             }
@@ -164,8 +168,8 @@ namespace Grid
             int startY = Normalise(clickPoint.Y);
             DrawingContext dct = _gridLinesVisual.RenderOpen();
             Rect rect = new Rect(new Point(startX, startY), new Point(startX + _offSet, startY + _offSet));
-            var brush = new SolidColorBrush(filling);
-            var penBrush = new SolidColorBrush(border);
+            SolidColorBrush brush = new SolidColorBrush(filling);
+            SolidColorBrush penBrush = new SolidColorBrush(border);
             dct.DrawRectangle(brush, new Pen(penBrush, 1), rect);
             dct.Close();
             AddAndRender(_gridLinesVisual.Drawing);
@@ -220,9 +224,15 @@ namespace Grid
                 a.VisitedMark = ColorVisited;
                 Thread thread = new Thread(e =>
                 {
-                    var result = a.FindPath();
-                    var b = result;
-
+                    List<Node> result = a.FindPath();
+                    List<Node> drawingResult = result.GetRange(1, result.Count - 2);
+                    drawingResult.ForEach(e =>
+                    {
+                        mainWindow.Dispatcher.Invoke(() =>
+                        {
+                            ColourSquare(e.TopLeft, _black, _blue);
+                        });
+                    });
                 });
                 thread.IsBackground = true;
                 thread.Start();
@@ -232,6 +242,8 @@ namespace Grid
 
         public void ColorVisited(Node node)
         {
+            if(DontColor(node))
+                return;
             mainWindow.Dispatcher.Invoke(() =>
             {
                     ColourSquare(node.TopLeft, _black, _yellow);
@@ -241,11 +253,18 @@ namespace Grid
 
         public void ColorCurrent(Node node)
         {
+            if (DontColor(node))
+                return;
             mainWindow.Dispatcher.Invoke(() =>
             {
                 ColourSquare(node.TopLeft, _black, _orange);
             });
             Thread.Sleep(_sleepTimeInMiliseconds);
+        }
+
+        private bool DontColor(Node node)
+        {
+            return _nodeHandler.Start.Equals(node) || _nodeHandler.End.Equals(node);
         }
     }
 }

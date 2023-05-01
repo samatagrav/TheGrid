@@ -47,12 +47,10 @@ namespace Grid
             {
                 _lastContextPosition = Mouse.GetPosition(GridImage);
             }
-
         }
 
         private void SetStart(object sender, RoutedEventArgs args)
         {
-            
             if (_lastContextPosition.HasValue)
             {
                 gridController.SetStart(_lastContextPosition.Value);
@@ -66,9 +64,7 @@ namespace Grid
             {
                 gridController.SetEnd(_lastContextPosition.Value);
                 _lastContextPosition = null;
-
             }
-
         }
 
         private void Button_Click_Save(object sender, RoutedEventArgs e)
