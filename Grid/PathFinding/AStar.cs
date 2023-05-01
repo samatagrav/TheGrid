@@ -29,12 +29,12 @@ namespace Grid.PathFinding
             gScore[_startNode] = 0;
             Dictionary<Node, double> fScore = new Dictionary<Node, double>();
             Func<Node, int> getGScore = (node) => { return gScore.ContainsKey(node) ? gScore[node] : _pseudoInfinity; };
-
-            orderedOpenList.Add(_startNode );
+            orderedOpenList.Add(_startNode);
             fScore[_startNode] = _hFunc.Invoke(_startNode.TopLeft, _endNode.TopLeft);
             while (orderedOpenList.Count != 0)
             {
                 Node current=  orderedOpenList.OrderBy(a => fScore[a]).First();
+                CurrentMark(current);
                 if (current.TopLeft.Equals(_endNode.TopLeft))
                 {
                     return constructPath(cameFrom, current);
@@ -53,6 +53,7 @@ namespace Grid.PathFinding
                             orderedOpenList.Add(neighbor);
                         }
                     }
+                    VisitedMark(current);
                 });
             }
 
@@ -71,14 +72,6 @@ namespace Grid.PathFinding
             }
             totalPath.Reverse();
             return totalPath;
-        }
-
-        public override void VisitedMark()
-        {
-        }
-
-        public override void CurrentMark()
-        {
         }
 
         public static double ManhattanDistance(Point a, Point b)

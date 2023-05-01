@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Timers;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using Grid.PathFinding;
@@ -23,6 +25,7 @@ namespace Grid
 
         private const int _offSet = 25;
         private const string Separator = "\n";
+        private const int _sleepTimeInMiliseconds = 500;
         private DrawingVisual _gridLinesVisual = new DrawingVisual();
         private DrawingGroup _drawingGroup = new DrawingGroup();
         private readonly Color _red = Color.FromRgb(255, 0, 0);
@@ -31,7 +34,8 @@ namespace Grid
         private readonly Color _greenStart = Color.FromRgb(50,200,50);
         private readonly Color _greenEnd = Color.FromRgb(10, 100, 10);
         private readonly Color _white = Color.FromRgb(255, 255, 255);
-        private readonly Color _pink = Color.FromRgb(255, 192, 203);
+        private readonly Color _yellow = Color.FromRgb(255,255,0);
+        private readonly Color _orange = Color.FromRgb(255,165,0);
 
         private Nullable<Point> _lastPoint;
         private int _baseGridHash;
@@ -211,11 +215,37 @@ namespace Grid
             var end = _nodeHandler.End;
             if ( start!= null && end != null)
             {
-                var a = new AStar(start,end,null,_nodeHandler);
-                var result = a.FindPath();
-                var b = result;
+                AStar a = new AStar(start,end,null,_nodeHandler);
+                a.CurrentMark = ColorCurrent;
+                a.VisitedMark = ColorVisited;
+                Thread thread = new Thread(e =>
+                {
+                    var result = a.FindPath();
+                    var b = result;
+
+                });
+                thread.IsBackground = true;
+                thread.Start();
             }
 
+        }
+
+        public void ColorVisited(Node node)
+        {
+            mainWindow.Dispatcher.Invoke(() =>
+            {
+                    ColourSquare(node.TopLeft, _black, _yellow);
+            });
+            Thread.Sleep(_sleepTimeInMiliseconds);
+        }
+
+        public void ColorCurrent(Node node)
+        {
+            mainWindow.Dispatcher.Invoke(() =>
+            {
+                ColourSquare(node.TopLeft, _black, _orange);
+            });
+            Thread.Sleep(_sleepTimeInMiliseconds);
         }
     }
 }

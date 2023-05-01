@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
+using System.Windows.Threading;
 
 namespace Grid
 {
@@ -15,8 +17,9 @@ namespace Grid
         }
 
         public abstract List<Node> FindPath();
-        public abstract void VisitedMark();
-        public abstract void CurrentMark();
+        public MarkDelegate VisitedMark;
+        public MarkDelegate CurrentMark;
 
+        public delegate void MarkDelegate(Node node);
     }
 }
