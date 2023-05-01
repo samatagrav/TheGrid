@@ -33,8 +33,8 @@
             <StackPanel Margin="10">
                 <ComboBox x:Name="cmbAlgorithms">
                     <ComboBoxItem>A Star</ComboBoxItem>
-                    <ComboBoxItem> Algo #2</ComboBoxItem>
-                    <ComboBoxItem> Algo #3</ComboBoxItem>
+                    <ComboBoxItem>Dijkstra</ComboBoxItem>
+                    <ComboBoxItem>Algo #3</ComboBoxItem>
                 </ComboBox>
             </StackPanel>
             <StackPanel Orientation="Vertical" >
@@ -60,7 +60,9 @@
                 <Button Width="100" Height="50">asd</Button>
             </StackPanel>
         </StackPanel>
-        <ProgressBar Grid.Column="1" HorizontalAlignment="Left" Height="10" Margin="35,54,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label Content="VisitedNodes:" Grid.Column="1" HorizontalAlignment="Left" Margin="30,890,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lVisitedNodes" Content="" Grid.Column="1" HorizontalAlignment="Center" Margin="0,890,0,0" VerticalAlignment="Top"/>
+        <Label Content="ShortestPath" Grid.Column="1" HorizontalAlignment="Left" Margin="33,921,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lShortestPath" Content="" Grid.Column="1" HorizontalAlignment="Center" Margin="0,921,0,0" VerticalAlignment="Top"/>
     </Grid>
-
 </Window>

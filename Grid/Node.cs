@@ -141,6 +141,10 @@ namespace Grid
             int x = (int)topLeft.X, y = (int)topLeft.Y;
             x = applyOffset(x);
             y = applyOffset(y);
+            if (x == -1)
+            {
+                var a = 0;
+            }
 
             if (x > 0 && y > 0 )
             {
@@ -176,6 +180,12 @@ namespace Grid
                     AddIfNotWall(neighbors,x - 1,y);
                     AddIfNotWall(neighbors,x,y - 1);
                 }
+            }
+            else if (x == 0 && y == 0)
+            {
+                AddIfNotWall(neighbors, x + 1, y);
+                AddIfNotWall(neighbors, x + 1, y + 1);
+                AddIfNotWall(neighbors, x, y + 1);
             }
             else
             {

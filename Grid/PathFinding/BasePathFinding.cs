@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using System.Windows.Threading;
@@ -7,6 +8,7 @@ namespace Grid
 {
     public abstract class BasePathFinding
     {
+        protected const int _pseudoInfinity = Int32.MaxValue;//On the scale it fits the infinity
         protected Node _startNode;
         protected Node _endNode;
 

@@ -10,7 +10,6 @@ namespace Grid.PathFinding
 {
     class AStar : BasePathFinding
     {
-        private const int _pseudoInfinity = Int32.MaxValue;//On the scale it fits the infinity
         private Func<Point, Point, double> _hFunc;
         private NodeHandler nodeHandler;
         public AStar(Node startNode,Node endNode,Func<Point,Point, double> heruistic,NodeHandler nodeHandler): base(startNode,endNode)
@@ -36,7 +35,7 @@ namespace Grid.PathFinding
                 Node current=  orderedOpenList.OrderBy(a => fScore[a]).First();
                 if (current.TopLeft.Equals(_endNode.TopLeft))
                 {
-                    return constructPath(cameFrom, current);
+                    return ConstructPath(cameFrom, current);
                 }
                 List<Node> neighbours =  nodeHandler.GetNeighbors(current);
                 CurrentMark(current);
@@ -61,7 +60,7 @@ namespace Grid.PathFinding
             return null;
         }
 
-        private List<Node> constructPath(Dictionary<Node,Node> cameFrom,Node current)
+        private List<Node> ConstructPath(Dictionary<Node,Node> cameFrom,Node current)
         {
             List<Node> totalPath = new List<Node>();
             totalPath.Add(current);

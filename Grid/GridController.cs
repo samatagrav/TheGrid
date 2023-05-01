@@ -46,6 +46,7 @@ namespace Grid
         private int _offset;
         private int _rows;
         private int _columns;
+        private int visited = 0;
         public void InnitGrid()
         {
 
@@ -219,16 +220,30 @@ namespace Grid
             var end = _nodeHandler.End;
             if ( start!= null && end != null)
             {
+                visited = 0;
                 BasePathFinding a;
-                if (algorithmIndex == 0 || true)
+                if (algorithmIndex == 0 )
                 {
                     a = new AStar(start, end, null, _nodeHandler);
+                } else //if(algorithmIndex == 1)
+                {
+                    a = new Dijkstra(start, end, _nodeHandler);
                 }
+
                 a.CurrentMark = ColorCurrent;
                 a.VisitedMark = ColorVisited;
                 Thread thread = new Thread(e =>
                 {
                     List<Node> result = a.FindPath();
+                    if (result == null)
+                    {
+                        mainWindow.Dispatcher.Invoke(() =>
+                        {
+                            mainWindow.lShortestPath.Content =  0.ToString();
+                        });
+                        return;
+                    }
+
                     List<Node> drawingResult = result.GetRange(1, result.Count - 2);
                     drawingResult.ForEach(e =>
                     {
@@ -236,6 +251,10 @@ namespace Grid
                         {
                             ColourSquare(e.TopLeft, _black, _blue);
                         });
+                    });
+                    mainWindow.Dispatcher.Invoke(() =>
+                    {
+                        mainWindow.lShortestPath.Content = (result.Count-1).ToString();
                     });
                 });
                 thread.IsBackground = true;
@@ -262,6 +281,8 @@ namespace Grid
             mainWindow.Dispatcher.Invoke(() =>
             {
                 ColourSquare(node.TopLeft, _black, _orange);
+                mainWindow.lVisitedNodes.Content = (visited++).ToString();
+
             });
             Thread.Sleep(_sleepTimeInMiliseconds);
         }
@@ -290,6 +311,9 @@ namespace Grid
             });
             _nodeHandler.Start = null;
             _nodeHandler.End = null;
+            visited = 0;
+            mainWindow.lVisitedNodes.Content = "";
+            mainWindow.lShortestPath.Content = "";
         }
     }
 }
