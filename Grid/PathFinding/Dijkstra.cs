@@ -15,7 +15,7 @@ namespace Grid.PathFinding
 
         public override List<Node> FindPath()
         {
-            Dictionary<Node, int> dist = new Dictionary<Node, int>();
+            Dictionary<Node, double> dist = new Dictionary<Node, double>();
             Dictionary<Node, Node> prev = new Dictionary<Node, Node>();
             List<Node> Q = new List<Node>();
             List<List<Node>> nodesM = _nodeHandler.GetNodes();
@@ -42,7 +42,13 @@ namespace Grid.PathFinding
                {
                    if (Q.Contains(neighbor))
                    {
-                       int alt = dist[current] + 1;
+                       double d = 1;
+                       if (neighbor.TopLeft.X != current.TopLeft.X && neighbor.TopLeft.Y != current.TopLeft.Y)
+                       {
+                           d = 1.41421356237;
+                       }
+
+                       double alt = dist[current] + d;
                        if (alt < dist[neighbor])
                        {
                            dist[neighbor] = alt;

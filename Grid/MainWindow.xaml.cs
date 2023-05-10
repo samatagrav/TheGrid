@@ -86,6 +86,7 @@ namespace Grid
                 string content = File.ReadAllText(openFileDialog.FileName);
                 string[] path = openFileDialog.FileName.Split("\\");
                 TextBoxMapName.Text = path[path.Length - 1].Split(".")[0];
+                gridController.Clear(true);
                 gridController.Deserialize(content);
             }
         }

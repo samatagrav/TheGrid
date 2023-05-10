@@ -24,10 +24,10 @@ namespace Grid.PathFinding
             List<Node> orderedOpenList = new List<Node>();
 
             Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
-            Dictionary<Node, int> gScore = new Dictionary<Node, int>();
+            Dictionary<Node, double> gScore = new Dictionary<Node, double>();
             gScore[_startNode] = 0;
             Dictionary<Node, double> fScore = new Dictionary<Node, double>();
-            Func<Node, int> getGScore = (node) => { return gScore.ContainsKey(node) ? gScore[node] : _pseudoInfinity; };
+            Func<Node, double> getGScore = (node) => { return gScore.ContainsKey(node) ? gScore[node] : _pseudoInfinity; };
             orderedOpenList.Add(_startNode);
             fScore[_startNode] = _hFunc.Invoke(_startNode.TopLeft, _endNode.TopLeft);
             while (orderedOpenList.Count != 0)
@@ -43,7 +43,12 @@ namespace Grid.PathFinding
                 neighbours.ForEach(neighbor =>
                 {
                     VisitedMark(neighbor);
-                    int tentative_gs = getGScore(current) + 1;//path weight is 1
+                    double d = 1;
+                    if (neighbor.TopLeft.X != current.TopLeft.X && neighbor.TopLeft.Y != current.TopLeft.Y)
+                    {
+                        d = 1.41421356237;
+                    }
+                    double tentative_gs = getGScore(current) + d;//path weight is 1
                     if (tentative_gs < getGScore(neighbor))
                     {
                         cameFrom[neighbor] = current;

@@ -299,13 +299,18 @@ namespace Grid
             {
                 a.ForEach(b =>
                 {
+
+                    Point position = b.TopLeft;
+                    Drawing result = _drawingGroup.Children.FirstOrDefault(x => x.Bounds.Contains(position) && !x.Bounds.GetHashCode().Equals(_baseGridHash));
                     if (clearWalls)
                     {
                         b.SetTile();
-                        ColourSquare(b.TopLeft,_black,_white);
+                        _drawingGroup.Children.Remove(result);
+                        mainWindow.GridImage.Source = new DrawingImage(_drawingGroup);
                     } else if (b.IsPassable())
                     {
-                        ColourSquare(b.TopLeft, _black, _white);
+                        _drawingGroup.Children.Remove(result);
+                        mainWindow.GridImage.Source = new DrawingImage(_drawingGroup);
                     }
                 });
             });
