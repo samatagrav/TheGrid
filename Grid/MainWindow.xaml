@@ -53,16 +53,15 @@
             <StackPanel Orientation="Horizontal" >
                 <Button x:Name="ClearWalls" Width="100" Height="50" Content="ClearMap" Click="ClearWalls_Click"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <Button Width="100" Height="50">asd</Button>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <Button Width="100" Height="50">asd</Button>
-            </StackPanel>
+            <StackPanel Orientation="Horizontal"/>
+            <StackPanel Orientation="Horizontal"/>
         </StackPanel>
         <Label Content="VisitedNodes:" Grid.Column="1" HorizontalAlignment="Left" Margin="30,890,0,0" VerticalAlignment="Top"/>
         <Label x:Name="lVisitedNodes" Content="" Grid.Column="1" HorizontalAlignment="Center" Margin="0,890,0,0" VerticalAlignment="Top"/>
         <Label Content="ShortestPath" Grid.Column="1" HorizontalAlignment="Left" Margin="33,921,0,0" VerticalAlignment="Top"/>
         <Label x:Name="lShortestPath" Content="" Grid.Column="1" HorizontalAlignment="Center" Margin="0,921,0,0" VerticalAlignment="Top"/>
+        <Label Content="Time (Milliseconds):" Grid.Column="1" HorizontalAlignment="Left" Margin="33,952,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lAlgTime" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="162,952,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="cbSlowMode" Content="SlowMode" Grid.Column="1" HorizontalAlignment="Left" Margin="90,448,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

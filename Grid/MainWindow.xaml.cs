@@ -29,7 +29,6 @@ namespace Grid
 
         private void GridImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            
             gridController.LeftClick(e.GetPosition(GridImage));
         }
         

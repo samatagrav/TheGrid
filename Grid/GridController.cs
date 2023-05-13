@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -26,6 +27,7 @@ namespace Grid
         private const int _offSet = 25;
         private const string Separator = "\n";
         private const int _sleepTimeInMiliseconds = 50;
+        private bool _sleep = false;
         private DrawingVisual _gridLinesVisual = new DrawingVisual();
         private DrawingGroup _drawingGroup = new DrawingGroup();
         private readonly Color _red = Color.FromRgb(255, 0, 0);
@@ -222,6 +224,7 @@ namespace Grid
             {
                 visited = 0;
                 BasePathFinding a;
+                _sleep = (bool)mainWindow.cbSlowMode.IsChecked;
                 if (algorithmIndex == 0 )
                 {
                     a = new AStar(start, end, null, _nodeHandler);
@@ -234,7 +237,14 @@ namespace Grid
                 a.VisitedMark = ColorVisited;
                 Thread thread = new Thread(e =>
                 {
+
+                    Stopwatch watch = new System.Diagnostics.Stopwatch();
+                    System.GC.Collect();
+                    watch.Restart();
                     List<Node> result = a.FindPath();
+                    watch.Stop();
+                    long elasped = watch.ElapsedMilliseconds;
+                    
                     if (result == null)
                     {
                         mainWindow.Dispatcher.Invoke(() =>
@@ -256,6 +266,10 @@ namespace Grid
                     {
                         mainWindow.lShortestPath.Content = (result.Count-1).ToString();
                     });
+                    mainWindow.Dispatcher.Invoke(() =>
+                    {
+                        mainWindow.lAlgTime.Content = elasped.ToString();
+                    });
                 });
                 thread.IsBackground = true;
                 thread.Start();
@@ -271,7 +285,7 @@ namespace Grid
             {
                     ColourSquare(node.TopLeft, _black, _yellow);
             });
-            Thread.Sleep(_sleepTimeInMiliseconds);
+            Sleep();
         }
 
         public void ColorCurrent(Node node)
@@ -284,7 +298,7 @@ namespace Grid
                 mainWindow.lVisitedNodes.Content = (visited++).ToString();
 
             });
-            Thread.Sleep(_sleepTimeInMiliseconds);
+            Sleep();
         }
 
         private bool DontColor(Node node)
@@ -295,30 +309,41 @@ namespace Grid
         public void Clear(bool clearWalls)
         {
             List<List<Node>> nodeList = _nodeHandler.GetNodes();
-            nodeList.ForEach(a =>
+            IEnumerable<Drawing> toRemove;
+            if (clearWalls)
             {
-                a.ForEach(b =>
-                {
+                nodeList.ForEach(x => x.ForEach(y => y.SetTile()));
+                toRemove = _drawingGroup.Children.Where(x => !x.Bounds.GetHashCode().Equals(_baseGridHash));
+            }
+            else
+            {
+               List<Node> nodes =  nodeList.SelectMany(x => x).ToList();
+               toRemove = _drawingGroup.Children.Where(x => 
+                   !x.Bounds.GetHashCode().Equals(_baseGridHash) && 
+                   nodes.Any(n => 
+                       n.IsPassable() && 
+                       x.Bounds.Contains(new Point(n.TopLeft.X+1,n.TopLeft.Y+1))));
+            }
 
-                    Point position = b.TopLeft;
-                    Drawing result = _drawingGroup.Children.FirstOrDefault(x => x.Bounds.Contains(position) && !x.Bounds.GetHashCode().Equals(_baseGridHash));
-                    if (clearWalls)
-                    {
-                        b.SetTile();
-                        _drawingGroup.Children.Remove(result);
-                        mainWindow.GridImage.Source = new DrawingImage(_drawingGroup);
-                    } else if (b.IsPassable())
-                    {
-                        _drawingGroup.Children.Remove(result);
-                        mainWindow.GridImage.Source = new DrawingImage(_drawingGroup);
-                    }
-                });
-            });
+            toRemove = toRemove.ToList();
+            foreach (var drawing in toRemove)
+            {
+                _drawingGroup.Children.Remove(drawing);
+            }
             _nodeHandler.Start = null;
             _nodeHandler.End = null;
             visited = 0;
             mainWindow.lVisitedNodes.Content = "";
             mainWindow.lShortestPath.Content = "";
+            mainWindow.lAlgTime.Content = "";
+        }
+
+        private void Sleep()
+        {
+            if (_sleep)
+            {
+                Thread.Sleep(_sleepTimeInMiliseconds);
+            }
         }
     }
 }
