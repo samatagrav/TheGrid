@@ -230,7 +230,11 @@ namespace Grid
                 if (algorithmIndex == 0 )
                 {
                     a = new AStar(start, end, null, _nodeHandler);
-                } else //if(algorithmIndex == 1)
+                } else if(algorithmIndex == 1)
+                {
+                    a = new AStar(start, end, AStar.EuclideanDistance, _nodeHandler);
+                }
+                else
                 {
                     a = new Dijkstra(start, end, _nodeHandler);
                 }

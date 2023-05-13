@@ -32,9 +32,9 @@
         <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" >
             <StackPanel Margin="10">
                 <ComboBox x:Name="cmbAlgorithms">
-                    <ComboBoxItem>A Star</ComboBoxItem>
+                    <ComboBoxItem>A Star Manhattan</ComboBoxItem>
+                    <ComboBoxItem>A star Eucledian</ComboBoxItem>
                     <ComboBoxItem>Dijkstra</ComboBoxItem>
-                    <ComboBoxItem>Algo #3</ComboBoxItem>
                 </ComboBox>
             </StackPanel>
             <StackPanel Orientation="Vertical" >
