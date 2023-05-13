@@ -21,6 +21,7 @@ namespace Grid
         public abstract List<Node> FindPath();
         public MarkDelegate VisitedMark;
         public MarkDelegate CurrentMark;
+        public MarkDelegate QueueMark;
 
         public delegate void MarkDelegate(Node node);
     }

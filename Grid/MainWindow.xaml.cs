@@ -85,7 +85,7 @@ namespace Grid
                 string content = File.ReadAllText(openFileDialog.FileName);
                 string[] path = openFileDialog.FileName.Split("\\");
                 TextBoxMapName.Text = path[path.Length - 1].Split(".")[0];
-                gridController.Clear(true);
+                gridController.Clear(true,true);
                 gridController.Deserialize(content);
             }
         }
@@ -97,12 +97,17 @@ namespace Grid
 
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
-            gridController.Clear(false);
+            gridController.Clear(false,true);
         }
 
         private void ClearWalls_Click(object sender, RoutedEventArgs e)
         {
-            gridController.Clear(true);
+            gridController.Clear(true,true);
+        }
+
+        private void ClearMarked_OnClick(object sender, RoutedEventArgs e)
+        {
+            gridController.Clear(false, false);
         }
     }
 }

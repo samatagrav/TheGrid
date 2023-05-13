@@ -38,7 +38,9 @@ namespace Grid
         private readonly Color _white = Color.FromRgb(255, 255, 255);
         private readonly Color _blue = Color.FromRgb(25, 25, 125);
         private readonly Color _yellow = Color.FromRgb(255,255,0);
-        private readonly Color _orange = Color.FromRgb(255,165,0);
+        private readonly Color _orange = Color.FromRgb(255,185,25);
+        private readonly Color _nectaring = Color.FromRgb(255, 100, 15);
+
 
         private Nullable<Point> _lastPoint;
         private int _baseGridHash;
@@ -235,6 +237,7 @@ namespace Grid
 
                 a.CurrentMark = ColorCurrent;
                 a.VisitedMark = ColorVisited;
+                a.QueueMark = ColorQueu;
                 Thread thread = new Thread(e =>
                 {
 
@@ -294,35 +297,52 @@ namespace Grid
                 return;
             mainWindow.Dispatcher.Invoke(() =>
             {
-                ColourSquare(node.TopLeft, _black, _orange);
+                ColourSquare(node.TopLeft, _black, _red);
                 mainWindow.lVisitedNodes.Content = (visited++).ToString();
 
             });
             Sleep();
         }
 
+        public void ColorQueu(Node node)
+        {
+            if (DontColor(node))
+                return;
+            mainWindow.Dispatcher.Invoke(() =>
+            {
+                ColourSquare(node.TopLeft, _black, _orange);
+            });
+            Sleep();
+        }
+
+
+
         private bool DontColor(Node node)
         {
             return _nodeHandler.Start.Equals(node) || _nodeHandler.End.Equals(node);
         }
 
-        public void Clear(bool clearWalls)
+        public void Clear(bool clearWalls,bool clearStartEnd)
         {
-            List<List<Node>> nodeList = _nodeHandler.GetNodes();
+            List<Node> nodeList = _nodeHandler.GetNodes().SelectMany(x => x).ToList();
+            if (!clearStartEnd)
+            {
+                nodeList = nodeList.Where(x => !x.Equals(_nodeHandler.Start) && !x.Equals(_nodeHandler.End)).ToList();
+            }
+
             IEnumerable<Drawing> toRemove;
             if (clearWalls)
             {
-                nodeList.ForEach(x => x.ForEach(y => y.SetTile()));
+                nodeList.ForEach(x => x.SetTile());
                 toRemove = _drawingGroup.Children.Where(x => !x.Bounds.GetHashCode().Equals(_baseGridHash));
             }
             else
             {
-               List<Node> nodes =  nodeList.SelectMany(x => x).ToList();
                toRemove = _drawingGroup.Children.Where(x => 
                    !x.Bounds.GetHashCode().Equals(_baseGridHash) && 
-                   nodes.Any(n => 
+                   nodeList.Any(n => 
                        n.IsPassable() && 
-                       x.Bounds.Contains(new Point(n.TopLeft.X+1,n.TopLeft.Y+1))));
+                       x.Bounds.Contains(PointPlus1(n.TopLeft))));
             }
 
             toRemove = toRemove.ToList();
@@ -330,8 +350,13 @@ namespace Grid
             {
                 _drawingGroup.Children.Remove(drawing);
             }
-            _nodeHandler.Start = null;
-            _nodeHandler.End = null;
+
+            if (clearStartEnd)
+            {
+                _nodeHandler.Start = null;
+                _nodeHandler.End = null;
+            }
+
             visited = 0;
             mainWindow.lVisitedNodes.Content = "";
             mainWindow.lShortestPath.Content = "";
@@ -344,6 +369,11 @@ namespace Grid
             {
                 Thread.Sleep(_sleepTimeInMiliseconds);
             }
+        }
+
+        private static Point PointPlus1(Point point)
+        {
+            return new Point(point.X + 1, point.Y + 1);
         }
     }
 }

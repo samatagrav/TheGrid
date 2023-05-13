@@ -42,7 +42,7 @@ namespace Grid.PathFinding
                 orderedOpenList.Remove(current);
                 neighbours.ForEach(neighbor =>
                 {
-                    VisitedMark(neighbor);
+                    //VisitedMark(neighbor);
                     double d = 1;
                     if (neighbor.TopLeft.X != current.TopLeft.X && neighbor.TopLeft.Y != current.TopLeft.Y)
                     {
@@ -56,6 +56,7 @@ namespace Grid.PathFinding
                         fScore[neighbor] = tentative_gs + _hFunc(neighbor.TopLeft,_endNode.TopLeft);
                         if(!orderedOpenList.Contains(neighbor)) {
                             orderedOpenList.Add(neighbor);
+                            QueueMark(neighbor);
                         }
                     }
                 });
