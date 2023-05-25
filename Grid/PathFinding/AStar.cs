@@ -14,7 +14,7 @@ namespace Grid.PathFinding
         private NodeHandler nodeHandler;
         public AStar(Node startNode,Node endNode,Func<Point,Point, double> heruistic,NodeHandler nodeHandler): base(startNode,endNode)
         {
-            _hFunc = heruistic ?? ManhattanDistance;
+            _hFunc = heruistic ?? Heuristics.ManhattanDistance;
 
             this.nodeHandler = nodeHandler;
         }
@@ -84,18 +84,6 @@ namespace Grid.PathFinding
             }
             totalPath.Reverse();
             return totalPath;
-        }
-
-        public static double ManhattanDistance(Point a, Point b)
-        {
-            return (Math.Abs(a.X-b.X)+ Math.Abs(a.Y-b.Y));
-        }
-
-        public static double EuclideanDistance(Point a, Point b)
-        {
-            double xd = a.X - b.X;
-            double yd = a.Y - b.Y;
-            return Math.Sqrt(xd*xd+yd*yd);
         }
     }
 }

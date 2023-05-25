@@ -12,6 +12,8 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Grid.PathFinding;
+using ThreadState = System.Threading.ThreadState;
+
 // ReSharper disable All
 #pragma warning disable SYSLIB0006
 
@@ -63,6 +65,7 @@ namespace Grid
             _nodeHandler= new NodeHandler(_rows,_columns, _offset);
             DrawGrid(_rows, _columns);
             PopulateFields(_rows,_columns);
+            //System.GC.AddMemoryPressure(Int64.MaxValue);
         }
 
         public void WallClick(Point position)
@@ -232,10 +235,10 @@ namespace Grid
                 _sleep = (bool)mainWindow.cbSlowMode.IsChecked;
                 if (algorithmIndex == 0 )
                 {
-                    a = new AStar(start, end, null, _nodeHandler);
+                    a = new AStar(start, end, Heuristics.ManhattanDistance, _nodeHandler);
                 } else if(algorithmIndex == 1)
                 {
-                    a = new AStar(start, end, AStar.EuclideanDistance, _nodeHandler);
+                    a = new AStar(start, end, Heuristics.EuclideanDistance, _nodeHandler);
                 }
                 else if (algorithmIndex == 2)
                 {
@@ -253,8 +256,9 @@ namespace Grid
                     
                     try
                     {
-                        Stopwatch watch = new System.Diagnostics.Stopwatch();
+                        Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                         System.GC.Collect();
+                        System.GC.WaitForPendingFinalizers();
                         watch.Restart();
                         List<Node> result = a.FindPath();
                         watch.Stop();
@@ -266,20 +270,23 @@ namespace Grid
                         }
 
                         List<Node> drawingResult = result.GetRange(1, result.Count - 2);
-                        drawingResult.ForEach(e =>
-                        {
-                            mainWindow.Dispatcher.Invoke(() => { ColourSquare(e.TopLeft, _black, _blue); });
-                        });
+                       
                         mainWindow.Dispatcher.Invoke(() =>
                         {
                             mainWindow.lShortestPath.Content = (result.Count - 1).ToString();
                         });
                         mainWindow.Dispatcher.Invoke(() => { mainWindow.lAlgTime.Content = elasped.ToString(); });
+                        drawingResult.ForEach(e =>
+                        {
+                            mainWindow.Dispatcher.Invoke(() => { ColourSquare(e.TopLeft, _black, _blue); });
+                        });
+                        pathFinding.Join();
                     }
                     catch (ThreadAbortException exception)
                     {
                         
                     }
+
                 });
                 pathFinding.IsBackground = true;
                 pathFinding.Start();
@@ -287,7 +294,14 @@ namespace Grid
 
         }
 
-        
+
+
+        public List<long> BenchMark(int algorithmIndex)
+        {
+            var res = new List<long>();
+
+            return res;
+        }
 
         public void ColorVisited(Node node)
         {
@@ -388,6 +402,12 @@ namespace Grid
         public void Stop()
         {
             pathFinding.Abort();
+        }
+
+        private void ThreadProc()
+        {
+            if (pathFinding.ThreadState != ThreadState.Unstarted)
+                pathFinding.Join();
         }
     }
 }

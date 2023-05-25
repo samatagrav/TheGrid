@@ -8,9 +8,7 @@ namespace Grid
 {
     public class Node
     {
-        private Size _size = new Size(1.0, 1.0);//TODO:use a provider maybe
-        private double a = 0.5;
-        private double c = 0.7071;
+        private Size _size = new Size(1.0, 1.0);
         private Point _topLeft;
         private FieldTypeValue _fieldType;
 
@@ -278,11 +276,6 @@ namespace Grid
                 });
             });
             return result;
-        }
-
-        public void Deserialize()
-        {
-            
         }
 
         public void Flush()

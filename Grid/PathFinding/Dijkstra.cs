@@ -150,24 +150,5 @@ namespace Grid.PathFinding
             return totalPath;
         }
 
-        private List<Node> ConstructPathShortest(Dictionary<Node, Node> prev, Node current)
-        {
-            List<Node> totalPath = new List<Node>();
-            totalPath.Add(current);
-            Node localCurrent = current;
-            while (prev.ContainsKey(localCurrent))
-            {
-                localCurrent = prev[localCurrent];
-                totalPath.Add(localCurrent);
-            }
-
-            if (totalPath.Count == 1)
-            {
-                return null;
-            }
-
-            totalPath.Reverse();
-            return totalPath;
-        }
     }
 }
