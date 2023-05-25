@@ -141,10 +141,6 @@ namespace Grid
             int x = (int)topLeft.X, y = (int)topLeft.Y;
             x = applyOffset(x);
             y = applyOffset(y);
-            if (x == -1)
-            {
-                var a = 0;
-            }
 
             if (x > 0 && y > 0 )
             {

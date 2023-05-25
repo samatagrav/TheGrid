@@ -109,5 +109,10 @@ namespace Grid
         {
             gridController.Clear(false, false);
         }
+
+        private void benchmark_OnClick(object sender, RoutedEventArgs e)
+        {
+            gridController.Stop();
+        }
     }
 }

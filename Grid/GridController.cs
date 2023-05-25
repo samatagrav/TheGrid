@@ -10,9 +10,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using Grid.PathFinding;
-
 // ReSharper disable All
+#pragma warning disable SYSLIB0006
 
 namespace Grid
 {
@@ -40,7 +41,7 @@ namespace Grid
         private readonly Color _yellow = Color.FromRgb(255,255,0);
         private readonly Color _orange = Color.FromRgb(255,185,25);
         private readonly Color _nectaring = Color.FromRgb(255, 100, 15);
-
+        private Thread pathFinding;
 
         private Nullable<Point> _lastPoint;
         private int _baseGridHash;
@@ -204,18 +205,20 @@ namespace Grid
         public void Deserialize(string content)
         {
             string[] lines = content.Split(Separator);
-            for (int i = 0; i < _columns; i++)
+            _nodeHandler.Flush();
+            int length = lines.Length - 1;
+            for (int i = 0; i < length; i++)
             {
-                for (int j = 0; j < _rows; j++)
+                Node node = JsonSerializer.Deserialize<Node>(lines[i]);
+                int x = (int)node.TopLeft.X / _offSet;
+                int y = (int)node.TopLeft.Y / _offSet;
+                _nodeHandler.CreateNode(x, y, node);
+                if (node.FieldType == FieldTypeValue.Wall)
                 {
-                    Node n = JsonSerializer.Deserialize<Node>(lines[j*_rows+ i]);
-                    _nodeHandler.CreateNode(j, i, n);
-                    if (n.FieldType == FieldTypeValue.Wall)
-                    {
-                        LeftClick(new Point(j * _offset + 1, i * _offset + 1));
-                    }
+                    LeftClick(new Point(node.TopLeft.X + 1, node.TopLeft.Y + 1));
                 }
             }
+
         }
 
         public void PathFind(int algorithmIndex)
@@ -234,55 +237,57 @@ namespace Grid
                 {
                     a = new AStar(start, end, AStar.EuclideanDistance, _nodeHandler);
                 }
-                else
+                else if (algorithmIndex == 2)
                 {
                     a = new Dijkstra(start, end, _nodeHandler);
+                } else
+                {
+                    a = new Dijkstra(start, end, _nodeHandler,true);
                 }
 
                 a.CurrentMark = ColorCurrent;
                 a.VisitedMark = ColorVisited;
                 a.QueueMark = ColorQueu;
-                Thread thread = new Thread(e =>
+                pathFinding = new Thread(e =>
                 {
-
-                    Stopwatch watch = new System.Diagnostics.Stopwatch();
-                    System.GC.Collect();
-                    watch.Restart();
-                    List<Node> result = a.FindPath();
-                    watch.Stop();
-                    long elasped = watch.ElapsedMilliseconds;
                     
-                    if (result == null)
+                    try
                     {
-                        mainWindow.Dispatcher.Invoke(() =>
+                        Stopwatch watch = new System.Diagnostics.Stopwatch();
+                        System.GC.Collect();
+                        watch.Restart();
+                        List<Node> result = a.FindPath();
+                        watch.Stop();
+                        long elasped = watch.ElapsedMilliseconds;
+                        if (result == null)
                         {
-                            mainWindow.lShortestPath.Content =  0.ToString();
-                        });
-                        return;
-                    }
+                            mainWindow.Dispatcher.Invoke(() => { mainWindow.lShortestPath.Content = 0.ToString(); });
+                            return;
+                        }
 
-                    List<Node> drawingResult = result.GetRange(1, result.Count - 2);
-                    drawingResult.ForEach(e =>
-                    {
+                        List<Node> drawingResult = result.GetRange(1, result.Count - 2);
+                        drawingResult.ForEach(e =>
+                        {
+                            mainWindow.Dispatcher.Invoke(() => { ColourSquare(e.TopLeft, _black, _blue); });
+                        });
                         mainWindow.Dispatcher.Invoke(() =>
                         {
-                            ColourSquare(e.TopLeft, _black, _blue);
+                            mainWindow.lShortestPath.Content = (result.Count - 1).ToString();
                         });
-                    });
-                    mainWindow.Dispatcher.Invoke(() =>
+                        mainWindow.Dispatcher.Invoke(() => { mainWindow.lAlgTime.Content = elasped.ToString(); });
+                    }
+                    catch (ThreadAbortException exception)
                     {
-                        mainWindow.lShortestPath.Content = (result.Count-1).ToString();
-                    });
-                    mainWindow.Dispatcher.Invoke(() =>
-                    {
-                        mainWindow.lAlgTime.Content = elasped.ToString();
-                    });
+                        
+                    }
                 });
-                thread.IsBackground = true;
-                thread.Start();
+                pathFinding.IsBackground = true;
+                pathFinding.Start();
             }
 
         }
+
+        
 
         public void ColorVisited(Node node)
         {
@@ -378,6 +383,11 @@ namespace Grid
         private static Point PointPlus1(Point point)
         {
             return new Point(point.X + 1, point.Y + 1);
+        }
+
+        public void Stop()
+        {
+            pathFinding.Abort();
         }
     }
 }

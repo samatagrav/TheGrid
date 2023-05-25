@@ -33,8 +33,9 @@
             <StackPanel Margin="10">
                 <ComboBox x:Name="cmbAlgorithms">
                     <ComboBoxItem>A Star Manhattan</ComboBoxItem>
-                    <ComboBoxItem>A star Eucledian</ComboBoxItem>
-                    <ComboBoxItem>Dijkstra</ComboBoxItem>
+                    <ComboBoxItem>A star Euclidean</ComboBoxItem>
+                    <ComboBoxItem>Dijkstra Any</ComboBoxItem>
+                    <ComboBoxItem>Dijkstra Shortest</ComboBoxItem>
                 </ComboBox>
             </StackPanel>
             <StackPanel Orientation="Vertical" >
@@ -47,6 +48,7 @@
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="StartPathfinding" Width="100" Height="50" Content="Start" Click="StartPathfinding_Click"/>
             </StackPanel>
+          
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="Clear" Width="100" Height="50" Content="ClearPathFinding" Click="Clear_Click"/>
             </StackPanel>
@@ -55,6 +57,9 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" >
                 <Button x:Name="ClearMarked" Width="100" Height="50" Content="ClearMarked" Click="ClearMarked_OnClick"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" >
+                <Button x:Name="benchmark" Width="100" Height="50" Content="Benchmark" Click="benchmark_OnClick"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal"/>
             <StackPanel Orientation="Horizontal"/>

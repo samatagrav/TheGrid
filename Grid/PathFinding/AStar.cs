@@ -21,25 +21,30 @@ namespace Grid.PathFinding
 
         public override List<Node> FindPath()
         {
-            List<Node> orderedOpenList = new List<Node>();
+            PriorityQueue<Node, double> openList = new PriorityQueue<Node, double>();
+            List<Node> visited = new List<Node>();
 
             Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
             Dictionary<Node, double> gScore = new Dictionary<Node, double>();
             gScore[_startNode] = 0;
             Dictionary<Node, double> fScore = new Dictionary<Node, double>();
             Func<Node, double> getGScore = (node) => { return gScore.ContainsKey(node) ? gScore[node] : _pseudoInfinity; };
-            orderedOpenList.Add(_startNode);
-            fScore[_startNode] = _hFunc.Invoke(_startNode.TopLeft, _endNode.TopLeft);
-            while (orderedOpenList.Count != 0)
+            //orderedOpenList.Add(_startNode);
+            double h = _hFunc.Invoke(_startNode.TopLeft, _endNode.TopLeft);
+            fScore[_startNode] = h;
+            openList.Enqueue(_startNode,h);
+            visited.Add(_startNode);
+
+            while (openList.Count != 0)
             {
-                Node current=  orderedOpenList.OrderBy(a => fScore[a]).First();
+                Node current = openList.Dequeue();
+                //orderedOpenList.Remove(current);
                 if (current.TopLeft.Equals(_endNode.TopLeft))
                 {
                     return ConstructPath(cameFrom, current);
                 }
                 List<Node> neighbours =  nodeHandler.GetNeighbors(current);
                 CurrentMark(current);
-                orderedOpenList.Remove(current);
                 neighbours.ForEach(neighbor =>
                 {
                     //VisitedMark(neighbor);
@@ -54,8 +59,9 @@ namespace Grid.PathFinding
                         cameFrom[neighbor] = current;
                         gScore[neighbor] = tentative_gs;
                         fScore[neighbor] = tentative_gs + _hFunc(neighbor.TopLeft,_endNode.TopLeft);
-                        if(!orderedOpenList.Contains(neighbor)) {
-                            orderedOpenList.Add(neighbor);
+                        if(!visited.Contains(neighbor)) {
+                            visited.Add(neighbor);
+                            openList.Enqueue(neighbor,fScore[neighbor]);
                             QueueMark(neighbor);
                         }
                     }
