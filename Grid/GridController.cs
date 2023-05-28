@@ -243,9 +243,13 @@ namespace Grid
                 else if (algorithmIndex == 2)
                 {
                     a = new Dijkstra(start, end, _nodeHandler);
-                } else
+                } else if(algorithmIndex == 3)
                 {
                     a = new Dijkstra(start, end, _nodeHandler,true);
+                }
+                else
+                {
+                    a = new BestFirstSearch(start, end, _nodeHandler);
                 }
 
                 a.CurrentMark = ColorCurrent;
@@ -284,7 +288,8 @@ namespace Grid
                     }
                     catch (ThreadAbortException exception)
                     {
-                        
+                        mainWindow.Dispatcher.Invoke(() => { mainWindow.lAlgTime.Content = "elasped".ToString(); });
+
                     }
 
                 });

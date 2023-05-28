@@ -24,7 +24,7 @@ namespace Grid.PathFinding
         {
             Dictionary<Node, double> dist = new Dictionary<Node, double>();
             Dictionary<Node, Node> prev = new Dictionary<Node, Node>();
-            
+            List<Node> visited = new List<Node>();
             List<Node> Q = new List<Node>();
             List<List<Node>> nodesM = _nodeHandler.GetNodes();
             nodesM.ForEach(nodesL =>
@@ -39,6 +39,7 @@ namespace Grid.PathFinding
                 });
             });
             dist[_startNode] = 0;
+            visited.Add(_startNode);
             while (Q.Count != 0)
             {
                 Node current = Q.OrderBy(e => dist[e]).First();
@@ -64,8 +65,15 @@ namespace Grid.PathFinding
                         {
                             dist[neighbor] = alt;
                             prev[neighbor] = current;
+                          //  QueueMark(neighbor);
                         }
-                        QueueMark(neighbor);
+
+                        if (!visited.Contains(neighbor))
+                        {
+                            QueueMark(neighbor);
+                            visited.Add(neighbor);
+                        }
+
                     }
                 });
                 VisitedMark(current);

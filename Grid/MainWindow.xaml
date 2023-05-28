@@ -36,6 +36,7 @@
                     <ComboBoxItem>A Star Euclidean </ComboBoxItem>
                     <ComboBoxItem>Dijkstra Any</ComboBoxItem>
                     <ComboBoxItem>Dijkstra Shortest</ComboBoxItem>
+                    <ComboBoxItem>Best-first Search</ComboBoxItem>
                 </ComboBox>
             </StackPanel>
             <StackPanel Orientation="Vertical" Margin="10">

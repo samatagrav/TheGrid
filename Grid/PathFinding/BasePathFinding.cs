@@ -8,7 +8,7 @@ namespace Grid
 {
     public abstract class BasePathFinding
     {
-        protected const int _pseudoInfinity = Int32.MaxValue;//On the scale it fits the infinity
+        protected const int _pseudoInfinity = Int32.MaxValue-100;//On the scale it fits the infinity
         protected Node _startNode;
         protected Node _endNode;
 
