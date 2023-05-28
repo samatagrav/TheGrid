@@ -230,15 +230,15 @@ namespace Grid
             var end = _nodeHandler.End;
             if ( start!= null && end != null)
             {
-                visited = 0;
+                visited = 1;
                 BasePathFinding a;
                 _sleep = (bool)mainWindow.cbSlowMode.IsChecked;
                 if (algorithmIndex == 0 )
                 {
-                    a = new AStar(start, end, Heuristics.ManhattanDistance, _nodeHandler);
+                    a = new AStar(start, end, Heuristics.ManhattanDistance, _nodeHandler,true);
                 } else if(algorithmIndex == 1)
                 {
-                    a = new AStar(start, end, Heuristics.EuclideanDistance, _nodeHandler, true);
+                    a = new AStar(start, end, Heuristics.EuclideanDistance, _nodeHandler);
                 }
                 else if (algorithmIndex == 2)
                 {
@@ -321,7 +321,6 @@ namespace Grid
             mainWindow.Dispatcher.Invoke(() =>
             {
                 ColourSquare(node.TopLeft, _black, _red);
-                mainWindow.lVisitedNodes.Content = (visited++).ToString();
 
             });
             Sleep();
@@ -334,6 +333,8 @@ namespace Grid
             mainWindow.Dispatcher.Invoke(() =>
             {
                 ColourSquare(node.TopLeft, _black, _orange);
+                mainWindow.lVisitedNodes.Content = (++visited).ToString();
+
             });
             Sleep();
         }

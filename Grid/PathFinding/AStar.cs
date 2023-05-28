@@ -34,7 +34,7 @@ namespace Grid.PathFinding
             Dictionary<Node, double> fScore = new Dictionary<Node, double>();
             Func<Node, double> getGScore = (node) => { return gScore.ContainsKey(node) ? gScore[node] : _pseudoInfinity; };
             //orderedOpenList.Add(_startNode);
-            double h = _hFunc.Invoke(_startNode.TopLeft, _endNode.TopLeft);
+            double h = _hFunc.Invoke(_startNode.TopLeft, _endNode.TopLeft)/5;
             fScore[_startNode] = h;
             openList.Enqueue(_startNode,h);
             visited.Add(_startNode);
@@ -42,30 +42,32 @@ namespace Grid.PathFinding
             while (openList.Count != 0)
             {
                 Node current = openList.Dequeue();
+                CurrentMark(current);
                 //orderedOpenList.Remove(current);
                 if (current.TopLeft.Equals(_endNode.TopLeft))
                 {
                     return ConstructPath(cameFrom, current);
                 }
                 List<Node> neighbours = getNeighbour(current);
-                CurrentMark(current);
                 neighbours.ForEach(neighbor =>
                 {
                     //VisitedMark(neighbor);
                     double d = 1;
-                    if (neighbor.TopLeft.X != current.TopLeft.X && neighbor.TopLeft.Y != current.TopLeft.Y)
+
+                    if ( neighbor.TopLeft.X != current.TopLeft.X && neighbor.TopLeft.Y != current.TopLeft.Y)
                     {
                         d = 1.41421356237;
                     }
-                    double tentative_gs = getGScore(current) + d;//path weight is 1
+                    double tentative_gs = getGScore(current) + d;
                     if (tentative_gs < getGScore(neighbor))
                     {
                         cameFrom[neighbor] = current;
                         gScore[neighbor] = tentative_gs;
-                        fScore[neighbor] = tentative_gs + _hFunc(neighbor.TopLeft,_endNode.TopLeft);
-                        if(!visited.Contains(neighbor)) {
+                        fScore[neighbor] = tentative_gs + _hFunc(neighbor.TopLeft,_endNode.TopLeft)/25;
+                        openList.Enqueue(neighbor, fScore[neighbor]);
+
+                        if (!visited.Contains(neighbor)) {
                             visited.Add(neighbor);
-                            openList.Enqueue(neighbor,fScore[neighbor]);
                             QueueMark(neighbor);
                         }
                     }

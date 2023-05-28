@@ -26,7 +26,6 @@ namespace Grid.PathFinding
             Dictionary<Node, Node> prev = new Dictionary<Node, Node>();
             
             List<Node> Q = new List<Node>();
-            PriorityQueue<Node, double> pQ = new PriorityQueue<Node, double>();
             List<List<Node>> nodesM = _nodeHandler.GetNodes();
             nodesM.ForEach(nodesL =>
             {
@@ -36,16 +35,13 @@ namespace Grid.PathFinding
                     {
                         dist[node] = _pseudoInfinity;
                         Q.Add(node);
-                        if(!node.Equals(_startNode))
-                            pQ.Enqueue(node,_pseudoInfinity);
                     }
                 });
             });
             dist[_startNode] = 0;
-            pQ.Enqueue(_startNode,0);
-            while (pQ.Count != 0)
+            while (Q.Count != 0)
             {
-                Node current = pQ.Dequeue();
+                Node current = Q.OrderBy(e => dist[e]).First();
                 Q.Remove(current);
                 CurrentMark(current);
                 if (current.TopLeft.Equals(_endNode.TopLeft))
@@ -69,6 +65,7 @@ namespace Grid.PathFinding
                             dist[neighbor] = alt;
                             prev[neighbor] = current;
                         }
+                        QueueMark(neighbor);
                     }
                 });
                 VisitedMark(current);
@@ -83,7 +80,6 @@ namespace Grid.PathFinding
             Dictionary<Node, double> dist = new Dictionary<Node, double>();
             Dictionary<Node, Node> prev = new Dictionary<Node, Node>();
             List<Node> Q = new List<Node>();
-            PriorityQueue<Node, double> pQ = new PriorityQueue<Node, double>();
             List<List<Node>> nodesM = _nodeHandler.GetNodes();
             
             nodesM.ForEach(nodesL =>
@@ -93,19 +89,15 @@ namespace Grid.PathFinding
                     if (node.IsPassable())
                     {
                         dist[node] = _pseudoInfinity;
-                        Q.Add(node);
-
-                        if (!node.Equals(_startNode))
-                            pQ.Enqueue(node, _pseudoInfinity);
+                        Q.Add(node); ;
                     }
                 });
             });
             dist[_startNode] = 0;
-            pQ.Enqueue(_startNode, 0);
 
-            while (pQ.Count != 0)
+            while (Q.Count != 0)
             {
-                Node current = pQ.Dequeue();
+                Node current = Q.OrderBy(e => dist[e]).First();
                 Q.Remove(current);
                 CurrentMark(current);
                 _nodeHandler.GetNeighbors(current).ForEach(neighbor =>
@@ -124,9 +116,12 @@ namespace Grid.PathFinding
                             dist[neighbor] = alt;
                             prev[neighbor] = current;
                         }
-                        VisitedMark(neighbor);
+                        QueueMark(neighbor);
+
                     }
                 });
+                VisitedMark(current);
+
             }
 
             return ConstructPath(prev,_endNode) ;
