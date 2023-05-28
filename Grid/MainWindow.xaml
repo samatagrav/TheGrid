@@ -33,7 +33,7 @@
             <StackPanel Margin="10">
                 <ComboBox x:Name="cmbAlgorithms">
                     <ComboBoxItem>A Star Manhattan</ComboBoxItem>
-                    <ComboBoxItem>A star Euclidean</ComboBoxItem>
+                    <ComboBoxItem>A Star Euclidean (4directional)</ComboBoxItem>
                     <ComboBoxItem>Dijkstra Any</ComboBoxItem>
                     <ComboBoxItem>Dijkstra Shortest</ComboBoxItem>
                 </ComboBox>

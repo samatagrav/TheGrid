@@ -11,12 +11,16 @@ namespace Grid.PathFinding
     class AStar : BasePathFinding
     {
         private Func<Point, Point, double> _hFunc;
+        private Func<Node, List<Node>> getNeighbour;
         private NodeHandler nodeHandler;
-        public AStar(Node startNode,Node endNode,Func<Point,Point, double> heruistic,NodeHandler nodeHandler): base(startNode,endNode)
+        private bool dir4;
+        public AStar(Node startNode,Node endNode,Func<Point,Point, double> heruistic,NodeHandler nodeHandler, bool d4 = false): base(startNode,endNode)
         {
             _hFunc = heruistic ?? Heuristics.ManhattanDistance;
-
+            this.dir4 = d4;
             this.nodeHandler = nodeHandler;
+            getNeighbour = d4 ? this.nodeHandler.GetNeighbors4 : this.nodeHandler.GetNeighbors;
+            
         }
 
         public override List<Node> FindPath()
@@ -43,7 +47,7 @@ namespace Grid.PathFinding
                 {
                     return ConstructPath(cameFrom, current);
                 }
-                List<Node> neighbours =  nodeHandler.GetNeighbors(current);
+                List<Node> neighbours = getNeighbour(current);
                 CurrentMark(current);
                 neighbours.ForEach(neighbor =>
                 {

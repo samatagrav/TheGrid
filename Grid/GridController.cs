@@ -238,7 +238,7 @@ namespace Grid
                     a = new AStar(start, end, Heuristics.ManhattanDistance, _nodeHandler);
                 } else if(algorithmIndex == 1)
                 {
-                    a = new AStar(start, end, Heuristics.EuclideanDistance, _nodeHandler);
+                    a = new AStar(start, end, Heuristics.EuclideanDistance, _nodeHandler, true);
                 }
                 else if (algorithmIndex == 2)
                 {

@@ -132,6 +132,80 @@ namespace Grid
             return _nodeList[x][y];
         }
 
+        public List<Node> GetNeighbors4(Node node)
+        {
+            List<Node> neighbors = new List<Node>();
+            Point topLeft = node.TopLeft;
+            int x = (int)topLeft.X, y = (int)topLeft.Y;
+            x = applyOffset(x);
+            y = applyOffset(y);
+
+            if (x > 0 && y > 0)
+            {
+                if (x < _nodeList.Count - 1 && y < _nodeList[0].Count - 1)
+                {
+                    AddIfNotWall(neighbors, x - 1, y);
+                    AddIfNotWall(neighbors, x + 1, y);
+                    AddIfNotWall(neighbors, x, y - 1);
+                    AddIfNotWall(neighbors, x, y + 1);
+                }
+                else if (x < _nodeList.Count - 1)
+                {
+                    AddIfNotWall(neighbors, x - 1, y);
+                    AddIfNotWall(neighbors, x + 1, y);
+                    AddIfNotWall(neighbors, x, y - 1);
+                }
+                else if (y < _nodeList[0].Count - 1)
+                {
+                    AddIfNotWall(neighbors, x - 1, y);
+                    AddIfNotWall(neighbors, x, y - 1);
+                    AddIfNotWall(neighbors, x, y + 1);
+                }
+                else
+                {
+                    AddIfNotWall(neighbors, x - 1, y);
+                    AddIfNotWall(neighbors, x, y - 1);
+                }
+            }
+            else if (x == 0 && y == 0)
+            {
+                AddIfNotWall(neighbors, x + 1, y);
+                AddIfNotWall(neighbors, x, y + 1);
+            }
+            else
+            {
+                if (y == 0)
+                {
+                    if (x < _nodeList.Count - 1)
+                    {
+                        AddIfNotWall(neighbors, x - 1, y);
+                        AddIfNotWall(neighbors, x + 1, y);
+                        AddIfNotWall(neighbors, x, y + 1);
+                    }
+                    else
+                    {
+                        AddIfNotWall(neighbors, x - 1, y);
+                        AddIfNotWall(neighbors, x, y + 1);
+                    }
+                }
+                else if (x == 0)
+                {
+                    if (y < _nodeList[0].Count - 1)
+                    {
+                        AddIfNotWall(neighbors, x + 1, y);
+                        AddIfNotWall(neighbors, x, y - 1);
+                        AddIfNotWall(neighbors, x, y + 1);
+                    }
+                    else
+                    {
+                        AddIfNotWall(neighbors, x + 1, y);
+                        AddIfNotWall(neighbors, x, y - 1);
+                    }
+                }
+            }
+
+            return neighbors;
+        }
         public List<Node> GetNeighbors(Node node)
         {
             List<Node> neighbors = new List<Node>();
