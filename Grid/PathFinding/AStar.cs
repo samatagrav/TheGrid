@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data;
 using System.Windows;
-using System.Linq;
-using System.Text;
 
 namespace Grid.PathFinding
 {
@@ -34,7 +30,7 @@ namespace Grid.PathFinding
             Dictionary<Node, double> fScore = new Dictionary<Node, double>();
             Func<Node, double> getGScore = (node) => { return gScore.ContainsKey(node) ? gScore[node] : _pseudoInfinity; };
             //orderedOpenList.Add(_startNode);
-            double h = _hFunc.Invoke(_startNode.TopLeft, _endNode.TopLeft)/5;
+            double h = _hFunc.Invoke(_startNode.TopLeft, _endNode.TopLeft)/25;
             fScore[_startNode] = h;
             openList.Enqueue(_startNode,h);
             visited.Add(_startNode);

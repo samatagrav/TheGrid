@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
-using System.Timers;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using Grid.PathFinding;
-using ThreadState = System.Threading.ThreadState;
-
 // ReSharper disable All
 #pragma warning disable SYSLIB0006
 
@@ -38,11 +31,9 @@ namespace Grid
         private readonly Color _brown = Color.FromRgb(165, 75, 0);
         private readonly Color _greenStart = Color.FromRgb(50,200,50);
         private readonly Color _greenEnd = Color.FromRgb(10, 100, 10);
-        private readonly Color _white = Color.FromRgb(255, 255, 255);
         private readonly Color _blue = Color.FromRgb(25, 25, 125);
         private readonly Color _yellow = Color.FromRgb(255,255,0);
         private readonly Color _orange = Color.FromRgb(255,185,25);
-        private readonly Color _nectaring = Color.FromRgb(255, 100, 15);
         private Thread pathFinding;
 
         private Nullable<Point> _lastPoint;
@@ -65,7 +56,6 @@ namespace Grid
             _nodeHandler= new NodeHandler(_rows,_columns, _offset);
             DrawGrid(_rows, _columns);
             PopulateFields(_rows,_columns);
-            //System.GC.AddMemoryPressure(Int64.MaxValue);
         }
 
         public void WallClick(Point position)
@@ -260,13 +250,9 @@ namespace Grid
                     
                     try
                     {
-                        Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
                         System.GC.Collect();
                         System.GC.WaitForPendingFinalizers();
-                        watch.Restart();
                         List<Node> result = a.FindPath();
-                        watch.Stop();
-                        long elasped = watch.ElapsedMilliseconds;
                         if (result == null)
                         {
                             mainWindow.Dispatcher.Invoke(() => { mainWindow.lShortestPath.Content = 0.ToString(); });
@@ -279,7 +265,6 @@ namespace Grid
                         {
                             mainWindow.lShortestPath.Content = (result.Count - 1).ToString();
                         });
-                        mainWindow.Dispatcher.Invoke(() => { mainWindow.lAlgTime.Content = elasped.ToString(); });
                         drawingResult.ForEach(e =>
                         {
                             mainWindow.Dispatcher.Invoke(() => { ColourSquare(e.TopLeft, _black, _blue); });
@@ -288,7 +273,6 @@ namespace Grid
                     }
                     catch (ThreadAbortException exception)
                     {
-                        mainWindow.Dispatcher.Invoke(() => { mainWindow.lAlgTime.Content = "elasped".ToString(); });
 
                     }
 
@@ -389,7 +373,6 @@ namespace Grid
             visited = 0;
             mainWindow.lVisitedNodes.Content = "";
             mainWindow.lShortestPath.Content = "";
-            mainWindow.lAlgTime.Content = "";
         }
 
         private void Sleep()
@@ -405,15 +388,5 @@ namespace Grid
             return new Point(point.X + 1, point.Y + 1);
         }
 
-        public void Stop()
-        {
-            pathFinding.Abort();
-        }
-
-        private void ThreadProc()
-        {
-            if (pathFinding.ThreadState != ThreadState.Unstarted)
-                pathFinding.Join();
-        }
     }
 }

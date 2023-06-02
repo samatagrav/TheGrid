@@ -51,7 +51,6 @@
                 <Button x:Name="Clear" Width="100" Height="50" Content="ClearPathFinding" Click="Clear_Click"/>
                 <Button x:Name="ClearWalls" Width="100" Height="50" Content="ClearMap" Click="ClearWalls_Click"/>
                 <Button x:Name="ClearMarked" Width="100" Height="50" Content="ClearMarked" Click="ClearMarked_OnClick"/>
-                <Button x:Name="benchmark" Width="100" Height="50" Content="Benchmark" Click="benchmark_OnClick" Margin="10"/>
             </StackPanel>
             <StackPanel  Orientation="Horizontal" >
                 <Label Content="VisitedNodes:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
@@ -60,10 +59,6 @@
             <StackPanel  Orientation="Horizontal" >
                 <Label Content="ShortestPath" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
                 <Label x:Name="lShortestPath" Content=""  HorizontalAlignment="Center"  VerticalAlignment="Top"/>
-            </StackPanel>
-            <StackPanel  Orientation="Horizontal" >
-                <Label Content="Time (Milliseconds):" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-                <Label x:Name="lAlgTime" Content=""  HorizontalAlignment="Left" VerticalAlignment="Top"/>
             </StackPanel>
         </StackPanel>
     </Grid>
